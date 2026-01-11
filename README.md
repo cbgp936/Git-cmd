@@ -739,6 +739,142 @@ git mergetool --tool-help
 # Configure default tool
 git config --global merge.tool vimdiff
 git config --global diff.tool vimdiff
+
+#Other clear explaination of Git conflict resoluton
+**1. git config --global core.editor vim**
+What it does
+
+Sets Vim as the default text editor Git uses.
+
+When it is used
+
+Git opens an editor when:
+
+Writing commit messages
+
+Editing merge commits
+
+Editing rebase todo files
+
+Editing tags
+
+Example
+git commit
+
+
+Vim opens instead of nano or vi.
+
+Reality check
+
+This does not affect diff or merge tools
+
+Only controls text editing
+
+**2. git config --global core.compression 2**
+What it does
+
+Sets Git object compression level.
+
+Range: 0 (no compression) → 9 (max compression)
+
+Default: 6
+
+What level 2 means
+
+Faster operations
+
+Slightly larger repository size
+
+When it matters
+
+Large repositories
+
+High-performance CI/CD environments
+
+Truth
+
+For normal developers, this setting gives negligible benefit. Don’t overthink it.
+
+**3. git config --global diff.tool vimdiff**
+What it does
+
+Sets vimdiff as the default tool for viewing diffs.
+
+How to use it
+git difftool
+
+This opens:
+
+Left: current file
+
+Right: changed file
+
+With syntax highlighting and split view
+
+Common mistake
+Running git diff
+❌ That does NOT use vimdiff
+✔️ Use git difftool
+
+**4. git mergetool**
+What it does
+Launches the configured merge tool (vimdiff here) during a merge conflict.
+When it is used
+git merge branch-name
+git mergetool
+
+It opens 3–4 panes depending on config.
+5. Vimdiff panes explained (CRITICAL)
+Inside git mergetool, Vim opens:
+
+Label	Meaning
+LOCAL (LO)	Your current branch
+REMOTE (RE)	Incoming branch
+BASE (BA)	Common ancestor
+MERGED	Final output
+6. Vimdiff conflict resolution commands
+:diffg LO
+Uses LOCAL version
+:diffg LO
+
+👉 Keeps your branch changes
+:diffg BA
+Uses BASE version
+:diffg BA
+
+👉 Restores original common version
+⚠️ Rarely useful in real merges
+:diffg RE
+Uses REMOTE version
+:diffg RE
+
+👉 Accepts incoming branch changes
+7. Saving and exiting merge tool
+:wqa
+What it does
+w → write (save)
+q → quit
+a → all buffers
+
+Meaning
+
+✔️ Saves all merge changes
+✔️ Exits vimdiff
+✔️ Returns control to Git
+
+8. Correct full conflict resolution flow (REAL LIFE)
+git merge feature-branch
+# conflict occurs
+
+git mergetool
+
+Inside vimdiff:
+:diffg RE    " or LO
+:wqa
+
+Back in terminal:
+git status
+git commit
 ```
 
 ---
@@ -1556,4 +1692,4 @@ Add to `~/.gitconfig`:
 
 ```ini
 
-[Complete Git Mastery Guide](#https://medium.com/@bhargavt639/the-complete-git-mastery-guide-379abfe316c2)
+[Complete Git Mastery Guide](https://medium.com/@bhargavt639/the-complete-git-mastery-guide-379abfe316c2)
